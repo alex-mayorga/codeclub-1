@@ -13,7 +13,8 @@ export default {
 		return new Response('Hello World!');
 	},
 };
-*/
+
+// 1st assignment
 
 // src/index.js
 var src_default = {
@@ -38,3 +39,38 @@ export {
 	src_default as default
 };
 //# sourceMappingURL=index.js.map
+*/
+
+// 2nd assignment
+
+addEventListener('fetch', event => {
+  event.respondWith(handleRequest(event.request))
+})
+
+async function handleRequest(request) {
+  // Get a random Pokemon ID between 1 and 151 (for the original 151 Pokemon)
+  const pokemonId = Math.floor(Math.random() * 649) + 1;
+
+  // Fetch the Pokemon data from the PokeAPI
+  const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
+  const data = await response.json();
+
+  // Get the SVG sprite URL
+  const spriteUrl = data.sprites.other['dream_world'].front_default;
+
+  // Check if the SVG sprite is available
+  if (!spriteUrl) {
+    return new Response('SVG sprite not available for this Pokemon', {
+      headers: { 'content-type': 'text/plain' },
+    });
+  }
+
+  // Fetch the SVG sprite
+  const imageResponse = await fetch(spriteUrl);
+
+  // Return the SVG sprite as the response
+  return new Response(imageResponse.body, {
+    headers: { 'content-type': 'image/svg+xml' },
+  });
+}
+
