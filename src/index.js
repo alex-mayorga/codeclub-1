@@ -39,7 +39,6 @@ export {
 	src_default as default
 };
 //# sourceMappingURL=index.js.map
-*/
 
 // 2nd assignment
 
@@ -72,5 +71,29 @@ async function handleRequest(request) {
   return new Response(imageResponse.body, {
     headers: { 'content-type': 'image/svg+xml' },
   });
+}
+
+*/
+
+// 3rd assignment
+
+addEventListener('fetch', (event) => {
+  event.respondWith(handleRequest(event.request));
+});
+
+async function handleRequest(request) {
+  const botScoreThreshold = 30; // Set your desired threshold
+
+  // Get the bot score from Cloudflare headers
+  const botScore = request.headers.get('cf-bot-management-score');
+
+  if (botScore && parseInt(botScore) < botScoreThreshold) {
+    // Redirect suspected bot traffic to httpbin.org/get
+    const url = 'https://httpbin.org/get';
+    return fetch(url);
+  } else {
+    // Handle other requests normally
+    return fetch(request);
+  }
 }
 
